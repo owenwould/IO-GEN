@@ -96,8 +96,8 @@ def load_data_txt(train_path,test_path):
             print(count)
 
     
-        flow_te = np.asarray(Image.open(test_line))
-        flow_te= tf.convert_to_tensor(flow)
+        flow_te = np.asarray(Image.open(os.path.join(img_path,test_line)))
+        flow_te = tf.convert_to_tensor(flow)
         flow_te = flow_te.numpy().astype("float32") / 255.0
         slashIndex = test_line.index('/')
         labCode = test_line[slashIndex+1:slashIndex+4]
