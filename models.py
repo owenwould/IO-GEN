@@ -60,7 +60,7 @@ def build_IO_GEN(ae, dsvdd, latent_dim,  lr, m):
     encoder = keras.models.clone_model(encoder) # re-initialize weights 
 
     l2_norm = 1e-4
-    d_x = keras.Input(shape=(64, 64) + (2 * m,), name='d_x')
+    d_x = keras.Input(shape=(64, 64) + (1 * m,), name='d_x')
     y = encoder(d_x) # pre-trained encoder
     y = layers.Flatten()(y)
     y = layers.Dense(1, kernel_regularizer=keras.regularizers.l2(l2_norm), activation='sigmoid')(y)
@@ -118,7 +118,7 @@ def build_DCAE(m, img_size=(64,64)):
     
     use_bias = True 
     l2_norm = 0
-    x = keras.Input(shape=img_size + (2 * m,))
+    x = keras.Input(shape=img_size + (1 * m,))
     y = layers.Conv2D(32, 3, padding='same', activation="relu", use_bias=use_bias,
                      kernel_regularizer=keras.regularizers.l2(l2_norm))(x)
     y = layers.MaxPooling2D(2, padding='same')(y)
@@ -143,7 +143,7 @@ def build_DCAE(m, img_size=(64,64)):
     y = layers.UpSampling2D(size=(2, 2))(y)
     y = layers.Conv2D(32, 3, padding='same', activation="relu", use_bias=use_bias,
                      kernel_regularizer=keras.regularizers.l2(l2_norm))(y)
-    decoded = layers.Conv2D(2 * m, 3, padding='same', activation="tanh", use_bias=use_bias, name='decoded')(y)
+    decoded = layers.Conv2D(1 * m, 3, padding='same', activation="tanh", use_bias=use_bias, name='decoded')(y)
     ae = keras.Model(x, decoded, name="DCAE")
     
     return ae

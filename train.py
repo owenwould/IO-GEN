@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 import numpy as np 
 import tensorflow.keras as keras
-from utils import load_of_data
+from utils import load_data_txt, load_of_data
 from models import build_DCAE, build_IO_GEN, build_classifier
 from metrics import euclidean_distance_square_loss, smooth_accuracy, feat_matching_loss
 
@@ -32,8 +32,12 @@ if not os.path.isdir(model_dir):
 if not os.path.isdir(tb_dir):
     os.makedirs(tb_dir)
 
+
+m = 3
 # load data
-train_x, test_stable_x, test_unstable_x = load_of_data(split_dir, m)
+train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc.txt"
+test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc.txt"
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path=train_path,test_path=test_path)
 
 # DCAE 
 print('\n==================================')

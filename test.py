@@ -3,14 +3,14 @@ import os
 import tensorflow as tf
 import numpy as np 
 import tensorflow.keras as keras
-from utils import load_of_data
+from utils import load_of_data,load_data_txt
 from metrics import euclidean_distance_square_loss, smooth_accuracy, score 
 from sklearn.metrics import roc_curve, auc
 
 # parse arguments 
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--split_dir', help='Directory for split')
-parser.add_argument('-m', '--m', default=2, type=int, help='Number of optical flow pairs per input (default=2)')
+parser.add_argument('-m', '--m', default=3, type=int, help='Number of optical flow pairs per input (default=3)')
 parser.add_argument('-d', '--model_dir', default='./saved_models', help='Directory to save trained models')
 parser.add_argument('-n', '--model_name', help='Model name to test, e.g.) DCAE, DSVDD, IO-GEN')
 parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0 or 1')
@@ -21,13 +21,17 @@ m = options.m
 model_dir = options.model_dir
 model_name = options.model_name
 verbose = options.verbose
+m = 3
 
 # necessary arguments 
 assert split_dir != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 
 # load data
-train_x, test_stable_x, test_unstable_x = load_of_data(split_dir, m)
+train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc.txt"
+test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc.txt"
+# load data
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path)
 
 # unstable_x locations to confine in time   
 n_test_samples = [0, 666, 1333, 4000, 6666, 9333, len(test_unstable_x)]
@@ -43,16 +47,17 @@ if model_name == 'DCAE':
     decoder = keras.Model(inputs=ae.input, outputs=ae.get_layer('decoded').output)                   
     y_test_stable_hat = score(ae.predict(test_stable_x), test_stable_x)
 
-    for n_test_i in range(1, len(n_test_samples)):
-        y_test_unstable_hat = score(ae.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]), \
-                              test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]])
-        true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
+   # for n_test_i in range(1, len(n_test_samples)):
+    #    y_test_unstable_hat = score(ae.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]), \
+     #                         test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]])
+     #   true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
 
-        fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-        auc_score = auc(fpr, tpr)
-        print('{}: {}'.format(days[n_test_i-1], auc_score))
+      #  fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
+       # auc_score = auc(fpr, tpr)
+       # print('{}: {}'.format(days[n_test_i-1], auc_score))
   
     # test with all 
+    
     y_test_unstable_hat = score(ae.predict(test_unstable_x), test_unstable_x)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
@@ -73,17 +78,22 @@ elif model_name == 'DSVDD':
     target_feat = np.expand_dims(center_feat, 0) 
 
     y_test_stable_hat = score(dsvdd.predict(test_stable_x), target_feat)
-    for n_test_i in range(1, len(n_test_samples)):
-        y_test_unstable_hat = score(dsvdd.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]), \
-                              target_feat)
-        true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
+    print("Stable",y_test_stable_hat)
+    #for n_test_i in range(1, len(n_test_samples)):
+     #   y_test_unstable_hat = score(dsvdd.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]), \
+      #                        target_feat)
+       # true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
 
-        fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-        auc_score = auc(fpr, tpr)
-        print('{}: {}'.format(days[n_test_i-1], auc_score))
+        #fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
+       # auc_score = auc(fpr, tpr)
+       # print('{}: {}'.format(days[n_test_i-1], auc_score))
   
     # test with all 
+
+    class_names = ['Normal','Anomalous']
+    
     y_test_unstable_hat = score(dsvdd.predict(test_unstable_x), target_feat)
+    print("Unstable ",y_test_unstable_hat)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
