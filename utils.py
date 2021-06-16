@@ -74,7 +74,7 @@ def load_data_txt(train_path,test_path):
         if labCode == ano_prefix:
             continue
         
-        if count % 100 == 100:
+        if count % 100 == 0:
             print(count)
 
         flow = np.asarray(Image.open(os.path.join(img_path,train_line)))

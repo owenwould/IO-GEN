@@ -28,8 +28,8 @@ assert split_dir != None, 'Please specify the directory of split to use. Use "-s
 assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 
 # load data
-train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc.txt"
-test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc.txt"
+train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
+test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
 # load data
 train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path)
 

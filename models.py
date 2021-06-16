@@ -116,7 +116,7 @@ def build_IO_GEN(ae, dsvdd, latent_dim,  lr, m):
 
 def build_DCAE(m, img_size=(64,64)): 
     
-    use_bias = True 
+    use_bias = False 
     l2_norm = 0
     x = keras.Input(shape=img_size + (1 * m,))
     y = layers.Conv2D(32, 3, padding='same', activation="relu", use_bias=use_bias,

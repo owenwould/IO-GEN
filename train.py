@@ -35,8 +35,8 @@ if not os.path.isdir(tb_dir):
 
 m = 3
 # load data
-train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc.txt"
-test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc.txt"
+train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
+test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
 train_x, test_stable_x, test_unstable_x = load_data_txt(train_path=train_path,test_path=test_path)
 
 # DCAE 
@@ -104,7 +104,7 @@ for e in range(n_epochs):
 # IO-GEN
 print('\n==================================')
 print('IO-GEN')
-
+exit(0)
 lr = 0.000005 * .5 * .5 
 latent_dim = (100,)
 
