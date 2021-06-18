@@ -53,7 +53,7 @@ def load_of_data(split_dir, m, max_m=4):
     return train_x, test_stable_x, test_unstable_x
 
 
-def load_data_txt(train_path,test_path):
+def load_data_txt(train_path,test_path,oncloud):
     train_x = []
     test_stable_x = []
     test_unstable_x = []
@@ -77,9 +77,11 @@ def load_data_txt(train_path,test_path):
         if count % 100 == 0:
             print(count)
 
-        flow = np.asarray(Image.open(os.path.join(img_path,train_line)))
-        
-        #flow = np.asarray(Image.open(train_line))
+        flow = []
+        if oncloud:
+           flow = np.asarray(Image.open(os.path.join(img_path,train_line)))
+        else:
+           flow = np.asarray(Image.open(train_line))
         flow = tf.convert_to_tensor(flow)
         flow = flow.numpy().astype("float32") / 255.0
         train_x.append(flow)
@@ -94,9 +96,13 @@ def load_data_txt(train_path,test_path):
         count += 1
         if count % 100 == 0:
             print(count)
-
-        #flow_te = np.asarray(Image.open(test_line))
-        flow_te = np.asarray(Image.open(os.path.join(img_path,test_line)))
+        
+        flow_te = []
+        if oncloud:
+            flow_te = np.asarray(Image.open(os.path.join(img_path,test_line)))
+        else:
+            flow_te = np.asarray(Image.open(test_line))
+        
         flow_te = tf.convert_to_tensor(flow_te)
         flow_te = flow_te.numpy().astype("float32") / 255.0
         slashIndex = test_line.index('/')

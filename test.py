@@ -14,6 +14,10 @@ parser.add_argument('-m', '--m', default=3, type=int, help='Number of optical fl
 parser.add_argument('-d', '--model_dir', default='./saved_models', help='Directory to save trained models')
 parser.add_argument('-n', '--model_name', help='Model name to test, e.g.) DCAE, DSVDD, IO-GEN')
 parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0 or 1')
+parser.add_argument('-tr','--train_dir')
+parser.add_argument('-te','--test_dir')
+parser.add_argument('-c','--cloud',type=bool,default=True)
+
 options = parser.parse_args()
 
 split_dir = options.split_dir
@@ -21,17 +25,20 @@ m = options.m
 model_dir = options.model_dir
 model_name = options.model_name
 verbose = options.verbose
+train_path = options.train_dir
+test_path = options.test_dir
+onCloud = options.cloud
 m = 3
 
 # necessary arguments 
-assert split_dir != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
+#assert split_dir != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 
 # load data
-train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
-test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
+#train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
+#test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
 # load data
-train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path)
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path,onCloud)
 
 # unstable_x locations to confine in time   
 n_test_samples = [0, 666, 1333, 4000, 6666, 9333, len(test_unstable_x)]
