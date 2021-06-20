@@ -5,7 +5,7 @@ import numpy as np
 import tensorflow.keras as keras
 from utils import load_of_data,load_data_txt
 from metrics import euclidean_distance_square_loss, smooth_accuracy, score 
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve, auc,classification_report
 
 # parse arguments 
 parser = argparse.ArgumentParser()
@@ -33,7 +33,7 @@ m = 3
 # necessary arguments 
 #assert split_dir != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
-
+class_names = ['Normal','Anomalous']
 # load data
 #train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
 #test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
@@ -101,8 +101,28 @@ elif model_name == 'DSVDD':
     
     y_test_unstable_hat = score(dsvdd.predict(test_unstable_x), target_feat)
     print("Unstable ",y_test_unstable_hat)
+
+    full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
+    thresholds = np.arange(0.01,2.0,0.01)
+    f1_best = 0.0
+    best_thresh = 0.0
+    for thr in thresholds:
+      pred_class = [1 if x > thr else 0 for x in full]
+      meme = classification_report(true_labels, pred_class, target_names=class_names,output_dict=True)
+      ana = meme[class_names[1]]
+      f1 = ana['f1-score']
+      if f1 > f1_best:
+        best_thresh = thr
+        f1_best = f1
+
+
+    print(best_thresh)
+    final_pred = [1 if x > best_thresh else 0 for x in full]
+    print(classification_report(true_labels, final_pred, target_names=class_names))
+    
+    
     auc_score = auc(fpr, tpr)
     print('ALL: {}'.format(auc_score))
     
@@ -113,20 +133,37 @@ elif model_name == 'IO-GEN':
           custom_objects={'smooth_accuracy': smooth_accuracy, 'keras': keras})
 
     y_test_stable_hat = cls.predict(test_stable_x).flatten()
-    for n_test_i in range(1, len(n_test_samples)):
-        y_test_unstable_hat = cls.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]).flatten()
-        true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
+    #for n_test_i in range(1, len(n_test_samples)):
+     #   y_test_unstable_hat = cls.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]).flatten()
+      #  true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
 
-        fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-        auc_score = auc(fpr, tpr)
-        print('{}: {}'.format(days[n_test_i-1], auc_score))
+       # fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
+       # auc_score = auc(fpr, tpr)
+       # print('{}: {}'.format(days[n_test_i-1], auc_score))
   
     # test with all 
     y_test_unstable_hat = cls.predict(test_unstable_x).flatten() 
+    full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
     print('ALL: {}'.format(auc_score))
+    thresholds = np.arange(0.01,2.0,0.01)
+    f1_best = 0.0
+    best_thresh = 0.0
+    for thr in thresholds:
+      pred_class = [1 if x > thr else 0 for x in full]
+      meme = classification_report(true_labels, pred_class, target_names=class_names,output_dict=True)
+      ana = meme[class_names[1]]
+      f1 = ana['f1-score']
+      if f1 > f1_best:
+        best_thresh = thr
+        f1_best = f1
+
+
+    print(best_thresh)
+    final_pred = [1 if x > best_thresh else 0 for x in full]
+    print(classification_report(true_labels, final_pred, target_names=class_names))
 
 else:
     print('Not appropriate model name') 

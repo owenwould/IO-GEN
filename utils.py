@@ -71,9 +71,7 @@ def load_data_txt(train_path,test_path,oncloud):
         slashIndex = train_line.index('/')
         labCode = train_line[slashIndex+1:slashIndex+4]
         count += 1
-        if labCode == ano_prefix:
-            continue
-        
+            
         if count % 100 == 0:
             print(count)
 
@@ -83,8 +81,11 @@ def load_data_txt(train_path,test_path,oncloud):
         else:
            flow = np.asarray(Image.open(train_line))
         flow = tf.convert_to_tensor(flow)
-        flow = flow.numpy().astype("float32") / 255.0
-        train_x.append(flow)
+        flow = flow.numpy().astype("float32") / 255.0 
+        if labCode == ano_prefix:
+            test_unstable_x.append(flow)
+        else:
+            train_x.append(flow)
     #train_x = np.transpose(np.array(train_x), (0,1,3,1))
     count = 0
     while True:
