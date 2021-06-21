@@ -125,6 +125,8 @@ elif model_name == 'DSVDD':
     
     auc_score = auc(fpr, tpr)
     print('ALL: {}'.format(auc_score))
+    print(train_path)
+    print(model_name)
     
 elif model_name == 'IO-GEN': 
 
@@ -147,7 +149,7 @@ elif model_name == 'IO-GEN':
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
-    print('ALL: {}'.format(auc_score))
+    
     thresholds = np.arange(0.01,2.0,0.01)
     f1_best = 0.0
     best_thresh = 0.0
@@ -164,6 +166,9 @@ elif model_name == 'IO-GEN':
     print(best_thresh)
     final_pred = [1 if x > best_thresh else 0 for x in full]
     print(classification_report(true_labels, final_pred, target_names=class_names))
+    print('ALL: {}'.format(auc_score))
+    print(train_path)
+    print(model_name)
 
 else:
     print('Not appropriate model name') 
