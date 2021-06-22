@@ -110,7 +110,7 @@ for e in range(n_epochs):
 # IO-GEN
 print('\n==================================')
 print('IO-GEN')
-exit(0)
+#exit(0)
 lr = 0.000005 * .5 * .5 
 latent_dim = (100,)
 
