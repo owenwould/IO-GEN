@@ -10,14 +10,14 @@ from metrics import euclidean_distance_square_loss, smooth_accuracy, feat_matchi
 # parse arguments 
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--split_dir', help='Directory for split')
-parser.add_argument('-m', '--m', default=2, type=int, help='Number of optical flow pairs per input (default=2)')
+parser.add_argument('-m', '--m', default=3, type=int, help='Number of optical flow pairs per input (default=2)')
 parser.add_argument('-d', '--model_dir', default='./saved_models', help='Directory to save trained models')
 parser.add_argument('-t', '--tensorboard_dir', default='./tb_logs', help='Directory to save tensorboard logs')
 parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0 or 1')
 parser.add_argument('-tr','--train_dir')
 parser.add_argument('-te','--test_dir')
 parser.add_argument('-i','--img_path')
-parser.add_argument('-o','--throw_out',type=bool) 
+parser.add_argument('-o','--throw_out',type=bool,default=True) 
 options = parser.parse_args()
 
 split_dir = options.split_dir
