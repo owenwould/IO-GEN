@@ -16,7 +16,7 @@ parser.add_argument('-n', '--model_name', help='Model name to test, e.g.) DCAE, 
 parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0 or 1')
 parser.add_argument('-tr','--train_dir')
 parser.add_argument('-te','--test_dir')
-parser.add_argument('-c','--cloud',type=bool,default=True)
+parser.add_argument('-i','--img_path')
 
 options = parser.parse_args()
 
@@ -27,18 +27,18 @@ model_name = options.model_name
 verbose = options.verbose
 train_path = options.train_dir
 test_path = options.test_dir
-onCloud = options.cloud
-m = 3
+img_path = options.img_path
+
 
 # necessary arguments 
-#assert split_dir != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
+assert img_path != None, 'Please Specifify img_path, -i argument' 
 assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 class_names = ['Normal','Anomalous']
 # load data
 #train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
 #test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
 # load data
-train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path,onCloud)
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path,img_path)
 
 # unstable_x locations to confine in time   
 n_test_samples = [0, 666, 1333, 4000, 6666, 9333, len(test_unstable_x)]
