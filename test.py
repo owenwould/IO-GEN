@@ -17,6 +17,7 @@ parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0
 parser.add_argument('-tr','--train_dir')
 parser.add_argument('-te','--test_dir')
 parser.add_argument('-i','--img_path')
+parser.add_argument('-o','--throw_out',type=bool) 
 
 options = parser.parse_args()
 
@@ -28,7 +29,7 @@ verbose = options.verbose
 train_path = options.train_dir
 test_path = options.test_dir
 img_path = options.img_path
-
+throw_out_ano = options.throw_out
 
 # necessary arguments 
 assert img_path != None, 'Please Specifify img_path, -i argument' 
@@ -38,7 +39,7 @@ class_names = ['Normal','Anomalous']
 #train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
 #test_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/test_oc_full.txt"
 # load data
-train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path,img_path)
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path,test_path,img_path,throw_out_ano)
 
 # unstable_x locations to confine in time   
 n_test_samples = [0, 666, 1333, 4000, 6666, 9333, len(test_unstable_x)]

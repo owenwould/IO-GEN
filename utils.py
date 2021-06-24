@@ -53,7 +53,7 @@ def load_of_data(split_dir, m, max_m=4):
     return train_x, test_stable_x, test_unstable_x
 
 
-def load_data_txt(train_path,test_path,img_path):
+def load_data_txt(train_path,test_path,img_path,throw_out_ano):
     train_x = []
     test_stable_x = []
     test_unstable_x = []
@@ -81,7 +81,12 @@ def load_data_txt(train_path,test_path,img_path):
         flow = tf.convert_to_tensor(flow)
         flow = flow.numpy().astype("float32") / 255.0 
         if labCode == ano_prefix:
-            test_unstable_x.append(flow)
+            if throw_out_ano:
+                #Should the anomalous which is in training be put into test or 
+                #not used at all 
+                continue
+            else:
+                test_unstable_x.append(flow) #put ano from train into unstable test
         else:
             train_x.append(flow)
     #train_x = np.transpose(np.array(train_x), (0,1,3,1))

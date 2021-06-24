@@ -17,7 +17,7 @@ parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0
 parser.add_argument('-tr','--train_dir')
 parser.add_argument('-te','--test_dir')
 parser.add_argument('-i','--img_path')
-
+parser.add_argument('-o','--throw_out',type=bool) 
 options = parser.parse_args()
 
 split_dir = options.split_dir
@@ -28,6 +28,7 @@ verbose = options.verbose
 train_path = options.train_dir
 test_path = options.test_dir
 img_path = options.img_path
+throw_out_ano = options.throw_out
 # necessary arguments 
 assert img_path != None, 'Please specify the img_path. Use "-i" argument in execution' 
 
@@ -41,7 +42,7 @@ if not os.path.isdir(tb_dir):
 
 
 # load data
-train_x, test_stable_x, test_unstable_x = load_data_txt(train_path=train_path,test_path=test_path,img_path=img_path)
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path=train_path,test_path=test_path,img_path=img_path,throw_out_ano=throw_out_ano)
 
 # DCAE 
 print('\n==================================')
