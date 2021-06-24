@@ -17,7 +17,7 @@ parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0
 parser.add_argument('-tr','--train_dir')
 parser.add_argument('-te','--test_dir')
 parser.add_argument('-i','--img_path')
-parser.add_argument('-o','--throw_out',type=bool) 
+parser.add_argument('-o','--throw_out',type=int,default=1,help='throw out either 1 for true or 0 for false') 
 
 options = parser.parse_args()
 
@@ -30,10 +30,12 @@ train_path = options.train_dir
 test_path = options.test_dir
 img_path = options.img_path
 throw_out_ano = options.throw_out
+throw_out_ano = (False,True)[throw_out_ano==1]
+#result = (on_false, on_true)[condition]
 
 # necessary arguments 
 assert img_path != None, 'Please Specifify img_path, -i argument' 
-assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
+#assert model_name != None, 'Please specify the directory of split to use. Use "-s" argument in execution' 
 class_names = ['Normal','Anomalous']
 # load data
 #train_path = "/content/gdrive/MyDrive/Masters/Datasets/data/dataset_filenames/train_oc_full.txt"
@@ -111,8 +113,9 @@ elif model_name == 'DSVDD':
     best_thresh = 0.0
     for thr in thresholds:
       pred_class = [1 if x > thr else 0 for x in full]
-      meme = classification_report(true_labels, pred_class, target_names=class_names,output_dict=True)
-      ana = meme[class_names[1]]
+      curr = classification_report(true_labels, pred_class, target_names=class_names,output_dict=True,zero_division=0)
+      #Zero Division=0 same as default but doesnt raise warnings
+      ana = curr[class_names[1]]
       f1 = ana['f1-score']
       if f1 > f1_best:
         best_thresh = thr

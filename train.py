@@ -17,7 +17,7 @@ parser.add_argument('-v', '--verbose', default=1, help='verbose option, either 0
 parser.add_argument('-tr','--train_dir')
 parser.add_argument('-te','--test_dir')
 parser.add_argument('-i','--img_path')
-parser.add_argument('-o','--throw_out',type=bool,default=True) 
+parser.add_argument('-o','--throw_out',type=int,default=1,help='throw out either 1 for true or 0 for false') 
 options = parser.parse_args()
 
 split_dir = options.split_dir
@@ -29,6 +29,11 @@ train_path = options.train_dir
 test_path = options.test_dir
 img_path = options.img_path
 throw_out_ano = options.throw_out
+
+throw_out_ano = (False,True)[throw_out_ano==1]
+#result = (on_false, on_true)[condition]
+
+
 # necessary arguments 
 assert img_path != None, 'Please specify the img_path. Use "-i" argument in execution' 
 
@@ -53,7 +58,7 @@ if verbose:
     print(ae.summary())
 
 lr = 0.00005 * 10. 
-n_epochs = 750
+n_epochs = 1
 batch_size = 16
 noise_level = 0.02
 
@@ -95,7 +100,7 @@ log_dir = "./{}/DSVDD".format(tb_dir)
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, write_graph=False,
                        profile_batch=0)
 
-n_epochs = 160
+n_epochs = 1
 batch_size = 16
 lr = 0.00005 
 encoder.compile(loss=[euclidean_distance_square_loss], optimizer=keras.optimizers.Adam(learning_rate=lr))
@@ -129,7 +134,7 @@ target_feat = np.expand_dims(center_feat, 0)
 target_feat_train = np.repeat(target_feat, len(train_x), axis=0)
 print(target_feat_train.shape)
 
-n_epochs = 20000
+n_epochs = 1
 batch_size = 16 #16
 noise_level = 0
 v_mean, v_std = 0, 1 
@@ -221,7 +226,7 @@ cls.compile(loss=['binary_crossentropy'], metrics=[smooth_accuracy], optimizer=k
 if verbose:
     print(cls.summary())
 
-n_epochs = 40 
+n_epochs = 1
 batch_size = 32
 saved_path = './{}/CLASSIFIER.h5'.format(model_dir)
 
