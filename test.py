@@ -72,7 +72,32 @@ if model_name == 'DCAE':
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
+    full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
     print('ALL: {}'.format(auc_score))
+    #MSE not between 0 - 1 
+    thresholds = np.arange(1,150,0.01)
+    f1_best = 0.0
+    best_thresh = 0.0
+    for thr in thresholds:
+      pred_class = [1 if x > thr else 0 for x in full]
+      curr = classification_report(true_labels, pred_class, target_names=class_names,output_dict=True,zero_division=0)
+      #Zero Division=0 same as default but doesnt raise warnings
+      ana = curr[class_names[1]]
+      f1 = ana['f1-score']
+      if f1 > f1_best:
+        best_thresh = thr
+        f1_best = f1
+
+
+    print(best_thresh)
+    final_pred = [1 if x > best_thresh else 0 for x in full]
+    print(classification_report(true_labels, final_pred, target_names=class_names))
+    
+    
+    auc_score = auc(fpr, tpr)
+    print('ALL: {}'.format(auc_score))
+    print(train_path)
+    print(model_name)
 
 elif model_name == 'DSVDD': 
 
