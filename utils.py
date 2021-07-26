@@ -62,6 +62,7 @@ def load_data_txt(train_path,test_path,img_path,throw_out_ano):
     test_file = open(test_path,'r')
     count = 0
     ano_prefix = "ano" 
+    normal_unripe_prefix = "nup"
     
     #Load Train Data
     while True:
@@ -80,6 +81,10 @@ def load_data_txt(train_path,test_path,img_path,throw_out_ano):
         flow = np.asarray(Image.open(os.path.join(img_path,train_line)))
         flow = tf.convert_to_tensor(flow)
         flow = flow.numpy().astype("float32") / 127.5 - 1
+        if labCode == normal_unripe_prefix:
+            continue ##normal_unripe is contains duplications of normal and unripe 
+
+
         if labCode == ano_prefix:
             if throw_out_ano:
                 #Should the anomalous which is in training be put into test or 
@@ -107,6 +112,8 @@ def load_data_txt(train_path,test_path,img_path,throw_out_ano):
         flow_te = flow_te.numpy().astype("float32") / 127.5 - 1
         slashIndex = test_line.index('/')
         labCode = test_line[slashIndex+1:slashIndex+4]
+        if labCode == normal_unripe_prefix:
+            continue ##normal_unripe is contains duplications of normal and unripe 
 
         if labCode == ano_prefix:
             test_unstable_x.append(flow_te)
