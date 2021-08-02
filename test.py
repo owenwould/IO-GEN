@@ -57,16 +57,7 @@ if model_name == 'DCAE':
     decoder = keras.Model(inputs=ae.input, outputs=ae.get_layer('decoded').output)                   
     y_test_stable_hat = score(ae.predict(test_stable_x), test_stable_x)
 
-   # for n_test_i in range(1, len(n_test_samples)):
-    #    y_test_unstable_hat = score(ae.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]), \
-     #                         test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]])
-     #   true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
-
-      #  fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-       # auc_score = auc(fpr, tpr)
-       # print('{}: {}'.format(days[n_test_i-1], auc_score))
-  
-    # test with all 
+   
     
     y_test_unstable_hat = score(ae.predict(test_unstable_x), test_unstable_x)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
@@ -75,7 +66,13 @@ if model_name == 'DCAE':
     full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
     print('ALL: {}'.format(auc_score))
     #MSE not between 0 - 1 
-    thresholds = np.arange(1,150,0.01)
+
+
+    pred_min = np.min(full) 
+    pred_max = np.max(full) 
+    interval = (pred_max - pred_min) / 1000.
+    
+    thresholds = np.arange(pred_min,pred_max,interval)
     f1_best = 0.0
     best_thresh = 0.0
     for thr in thresholds:
@@ -114,16 +111,7 @@ elif model_name == 'DSVDD':
 
     y_test_stable_hat = score(dsvdd.predict(test_stable_x), target_feat)
     print("Stable",y_test_stable_hat)
-    #for n_test_i in range(1, len(n_test_samples)):
-     #   y_test_unstable_hat = score(dsvdd.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]), \
-      #                        target_feat)
-       # true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
-
-        #fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-       # auc_score = auc(fpr, tpr)
-       # print('{}: {}'.format(days[n_test_i-1], auc_score))
-  
-    # test with all 
+    
 
     class_names = ['Normal','Anomalous']
     
@@ -133,7 +121,10 @@ elif model_name == 'DSVDD':
     full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-    thresholds = np.arange(0.01,2.0,0.01)
+    pred_min = np.min(full) 
+    pred_max = np.max(full) 
+    interval = (pred_max - pred_min) / 1000.
+    thresholds = np.arange(pred_min,pred_max,interval)
     f1_best = 0.0
     best_thresh = 0.0
     for thr in thresholds:
@@ -164,22 +155,19 @@ elif model_name == 'IO-GEN':
           custom_objects={'smooth_accuracy': smooth_accuracy, 'keras': keras})
 
     y_test_stable_hat = cls.predict(test_stable_x).flatten()
-    #for n_test_i in range(1, len(n_test_samples)):
-     #   y_test_unstable_hat = cls.predict(test_unstable_x[n_test_samples[n_test_i-1]:n_test_samples[n_test_i]]).flatten()
-      #  true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
-
-       # fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
-       # auc_score = auc(fpr, tpr)
-       # print('{}: {}'.format(days[n_test_i-1], auc_score))
-  
-    # test with all 
+ 
     y_test_unstable_hat = cls.predict(test_unstable_x).flatten() 
     full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
     
-    thresholds = np.arange(0.01,2.0,0.01)
+    pred_min = np.min(full) 
+    pred_max = np.max(full) 
+    interval = (pred_max - pred_min) / 1000.
+    
+    thresholds = np.arange(pred_min,pred_max,interval)
+    
     f1_best = 0.0
     best_thresh = 0.0
     for thr in thresholds:
