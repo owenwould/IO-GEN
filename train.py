@@ -64,7 +64,7 @@ if not os.path.isdir(tb_dir):
 
 
 # load data
-train_x, test_stable_x, test_unstable_x = load_data_txt(train_path=train_path,test_path=test_path,img_path=img_path,throw_out_ano=throw_out_ano)
+train_x, test_stable_x, test_unstable_x = load_data_txt(train_path=train_path,test_path=test_path,img_path=img_path,throw_out_ano=throw_out_ano,print_count=True)
 
 # DCAE 
 print('\n==================================')
