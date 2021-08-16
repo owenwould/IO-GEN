@@ -157,7 +157,7 @@ if model_name == 'DCAE':
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
     full = np.concatenate([y_test_stable_hat, y_test_unstable_hat],axis=-1)
-    print('ALL: {}'.format(auc_score))
+    print('AUC: {}'.format(auc_score))
     final_pred = classificationResults(full,true_labels)
 
     if case_type != -1:
@@ -183,7 +183,7 @@ elif model_name == 'DSVDD':
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
-    print('ALL: {}'.format(auc_score))
+    print('AUC: {}'.format(auc_score))
     final_pred = classificationResults(full,true_labels)
     if case_type != -1:
       indepthAnalysis(final_pred)
@@ -201,7 +201,7 @@ elif model_name == 'IO-GEN':
     true_labels = [0.] * len(y_test_stable_hat) + [1.] * len(y_test_unstable_hat)    
     fpr, tpr, th = roc_curve(true_labels, np.concatenate([y_test_stable_hat, y_test_unstable_hat], axis=-1))
     auc_score = auc(fpr, tpr)
-    print('ALL: {}'.format(auc_score))
+    print('AUC: {}'.format(auc_score))
     final_pred = classificationResults(full,true_labels)
     if case_type != -1:
       indepthAnalysis(final_pred)
