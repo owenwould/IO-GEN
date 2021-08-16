@@ -87,7 +87,10 @@ def calcResultsAndStore(complete_val_y,final_pred,filenames,individual_sets,mode
       if val == expected_val:
         correct += 1
     
-    print(name,correct/total,correct,"/",total)
+    if correct == 0:
+      print(name,0,correct,"/",total)
+    else:
+      print(name,correct/total,correct,"/",total)
   
   fn = '/content/gdrive/MyDrive/Masters/Datasets/data/Indepth Analysis/{}_results.txt'.format(model_name)
   
